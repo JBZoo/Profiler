@@ -14,14 +14,25 @@
 
 namespace JBZoo\PHPUnit;
 
+use JBZoo\Profiler\Profiler;
+
 /**
  * Class ProfilerTest
  * @package JBZoo\PHPUnit
  */
 class ProfilerTest extends PHPUnit
 {
-    public function test()
+    public function testSimple()
     {
-        isTrue(true);
+        $profiler = new Profiler();
+
+        $profiler->start();
+        sleep(1);
+        $profiler->tick();
+        $data = array(1, 2, 3, 4);
+        $profiler->stop();
+
+        isTrue($profiler->getMemoryUsage() > 0);
+        isTrue($profiler->getTime() >= 1);
     }
 }

@@ -10,6 +10,7 @@
  * @license   MIT
  * @copyright Copyright (C) JBZoo.com,  All rights reserved.
  * @link      https://github.com/JBZoo/Profiler
+ * @author    Denis Smetannikov <denis@jbzoo.com>
  */
 
 namespace JBZoo\PHPUnit;
@@ -21,5 +22,5 @@ namespace JBZoo\PHPUnit;
 class CodestyleTest extends Codestyle
 {
     protected $_packageName = "Profiler";
-    // protected $_packageAuthor = 'Denis Smetannikov <denis@jbzoo.com>';
+    protected $_packageAuthor = 'Denis Smetannikov <denis@jbzoo.com>';
 }
