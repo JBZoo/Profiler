@@ -31,8 +31,6 @@ class ProfilerTest extends PHPUnit
         sleep(1);
         $profiler->stop();
 
-        isTrue($profiler->getMemory() > 0);
-        isTrue($profiler->getTime() >= 1);
         $this->assertStringMatchesFormat('Time: %s; Memory: %s', $profiler->getTotalUsage());
     }
 
