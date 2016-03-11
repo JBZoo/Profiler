@@ -271,7 +271,11 @@ class Benchmark
      */
     public function out($message, $addEol = true)
     {
-        Cli::out($message, $addEol);
+        if (function_exists('\JBZoo\PHPUnit\cliMessage')) {
+            \JBZoo\PHPUnit\cliMessage($message, $addEol);
+        } else {
+            Cli::out($message, $addEol);
+        }
     }
 
     /**
@@ -288,10 +292,10 @@ class Benchmark
         ), $options);
 
         // Prepare
-        $benchmark = new Benchmark();
-        $benchmark->setCount($options['count']);
+        $bench = new Benchmark();
+        $bench->setCount($options['count']);
         foreach ($tests as $testName => $function) {
-            $benchmark->add($testName, $function);
+            $bench->add($testName, $function);
         }
         declare(ticks = 1);
 
@@ -299,16 +303,16 @@ class Benchmark
         $wrapProfiler = new Profiler();
 
         if ($options['output']) {
-            Cli::out(PHP_EOL . '<pre>--------------- Start compare bench: ' . $options['name'] . ' ---------------');
+            $bench->out(PHP_EOL . '<pre>--------------- Start compare: ' . $options['name'] . ' ---------------');
             $wrapProfiler->start(false);
-            $result = $benchmark->run(true);
+            $result = $bench->run(true);
             $wrapProfiler->stop();
-            Cli::out(PHP_EOL . 'TOTAL: ' . $wrapProfiler->getTotalUsage());
-            Cli::out('-------------------- Finish compare bench: ' . $options['name'] . ' ---------</pre>' . PHP_EOL);
+            $bench->out(PHP_EOL . 'TOTAL: ' . $wrapProfiler->getTotalUsage());
+            $bench->out('-------------------- Finish compare: ' . $options['name'] . ' ---------</pre>' . PHP_EOL);
 
         } else {
             $wrapProfiler->start(false);
-            $result = $benchmark->run(false);
+            $result = $bench->run(false);
             $wrapProfiler->stop();
         }
 
@@ -335,20 +339,20 @@ class Benchmark
         ), $options);
 
         // Prepare
-        $benchmark = new Benchmark();
-        $benchmark->setCount($options['count']);
-        $benchmark->add('Test', $test);
+        $bench = new Benchmark();
+        $bench->setCount($options['count']);
+        $bench->add('Test', $test);
         declare(ticks = 1);
 
         // Run tests
         $wrapProfiler = new Profiler();
         $wrapProfiler->start(false);
         if ($options['output']) {
-            Cli::out(PHP_EOL . '<pre>--------------- Start one bench: ' . $options['name'] . ' ---------------');
-            $result = $benchmark->run(true);
-            Cli::out('-------------------- Finish one bench: ' . $options['name'] . ' ---------</pre>' . PHP_EOL);
+            $bench->out(PHP_EOL . '<pre>--------------- Start one bench: ' . $options['name'] . ' ---------------');
+            $result = $bench->run(true);
+            $bench->out('-------------------- Finish one bench: ' . $options['name'] . ' ---------</pre>' . PHP_EOL);
         } else {
-            $result = $benchmark->run(false);
+            $result = $bench->run(false);
         }
 
         $wrapProfiler->stop();
