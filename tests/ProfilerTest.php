@@ -10,6 +10,7 @@
  * @license   MIT
  * @copyright Copyright (C) JBZoo.com,  All rights reserved.
  * @link      https://github.com/JBZoo/Profiler
+ * @author    Denis Smetannikov <denis@jbzoo.com>
  */
 
 namespace JBZoo\PHPUnit;
@@ -22,17 +23,22 @@ use JBZoo\Profiler\Profiler;
  */
 class ProfilerTest extends PHPUnit
 {
-    public function testSimple()
+    public function testStartAndStop()
     {
         $profiler = new Profiler();
 
         $profiler->start();
         sleep(1);
-        $profiler->tick();
-        $data = array(1, 2, 3, 4);
         $profiler->stop();
 
-        isTrue($profiler->getMemoryUsage() > 0);
+        isTrue($profiler->getMemory() > 0);
         isTrue($profiler->getTime() >= 1);
+        $this->assertStringMatchesFormat('Time: %s; Memory: %s', $profiler->getTotalUsage());
+    }
+
+    public function testResourceUsage()
+    {
+        $this->assertStringMatchesFormat('Time: %s, Peak memory: %s', Profiler::resourceUsage());
+        $this->assertStringMatchesFormat('Time: %s, Memory: %s', Profiler::resourceUsage(false));
     }
 }

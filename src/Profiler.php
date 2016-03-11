@@ -15,6 +15,10 @@
 
 namespace JBZoo\Profiler;
 
+use JBZoo\Utils\FS;
+use JBZoo\Utils\Sys;
+use JBZoo\Utils\Timer;
+
 /**
  * Class Profiler
  * @package JBZoo\Profiler
@@ -43,13 +47,16 @@ class Profiler
 
     /**
      * Start profiler
+     * @param bool $registerTick
      */
-    public function start()
+    public function start($registerTick = true)
     {
-        $this->_startMemory = memory_get_usage(false);
         $this->_startTime   = microtime(true);
+        $this->_startMemory = memory_get_usage(false);
 
-        register_tick_function(array($this, 'tick'));
+        if ($registerTick && Sys::isFunc('register_tick_function')) {
+            register_tick_function(array($this, 'tick'));
+        }
     }
 
     /**
@@ -65,16 +72,18 @@ class Profiler
      */
     public function stop()
     {
-        $this->tick();
         $this->_endTime = microtime(true);
+        $this->tick();
 
-        unregister_tick_function(array($this, 'tick'));
+        if (Sys::isFunc('unregister_tick_function')) {
+            unregister_tick_function(array($this, 'tick'));
+        }
     }
 
     /**
      * @return float
      */
-    public function getMemoryUsage()
+    public function getMemory()
     {
         return $this->_maxMemory - $this->_startMemory;
     }
@@ -85,5 +94,40 @@ class Profiler
     public function getTime()
     {
         return $this->_endTime - $this->_startTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTotalUsage()
+    {
+        return sprintf(
+            'Time: %s; Memory: %s',
+            Timer::format($this->getTime()),
+            FS::format($this->getMemory(), 2)
+        );
+    }
+
+    /**
+     * Returns the resources (time, memory) of the request as a string.
+     *
+     * @param bool $getPeakMemory
+     * @param bool $isRealMemory
+     * @return string
+     */
+    public static function resourceUsage($getPeakMemory = true, $isRealMemory = false)
+    {
+        if ($getPeakMemory) {
+            $message = 'Time: %s, Peak memory: %s';
+            $memory  = memory_get_peak_usage($isRealMemory);
+        } else {
+            $message = 'Time: %s, Memory: %s';
+            $memory  = memory_get_usage($isRealMemory);
+        }
+
+        $memory = FS::format($memory, 2);
+        $time   = Timer::format(Timer::timeSinceStart());
+
+        return sprintf($message, $time, $memory);
     }
 }
