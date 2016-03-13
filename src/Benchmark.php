@@ -223,7 +223,7 @@ class Benchmark
 
             // memory
             $memory = $results['list'][$name]['memory'];
-            //$memory -= $this->_overhead['memory'];
+            $memory -= $this->_overhead['memory'];
             $results['list'][$name]['memory'] = $memory;
 
             $minMemory = min($minMemory, $memory);
