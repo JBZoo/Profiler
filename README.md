@@ -13,6 +13,52 @@ composer test
 ```
 
 
+## Usage
+```php
+use JBZoo\Profiler\Benchmark;
+
+// Compare performance of functions
+Benchmark::compare([
+    'md5'   => function () {
+        $string = str_repeat(mt_rand(0, 9), 1024 * 1024);
+        return md5($string);
+    },
+    'sha1'  => function () {
+        $string = str_repeat(mt_rand(0, 9), 1024 * 1024);
+        return sha1($string);
+    },
+    'crc32' => function () {
+        $string = str_repeat(mt_rand(0, 9), 1024 * 1024);
+        return crc32($string);
+    },
+], array('count' => 500, 'name' => 'Hash functions'));
+
+/* Result:
+
+  ---------- Start benchmark: Hash functions  ----------
+  Running tests 500 times
+  PHP Overhead: time=58 ms; memory=0 B;
+
+  Testing 1/3 : md5 ... Done!
+  Testing 2/3 : sha1 ... Done!
+  Testing 3/3 : crc32 ... Done!
+
+  Name of test    Time, ms    Time, %     Memory    Memory, %
+  crc32              1 551          ~    1.25 MB            ~
+  md5                1 938         25    1.25 MB            ~
+  sha1               2 776         79    1.25 MB            ~
+
+  TOTAL TIME: 6 547.37 ms/4.36 ms;   MEMO: 41.05 KB/0.03 KB;   COUNT: 1 500
+  ---------- Finish benchmark: Hash functions  ----------
+*/
+
+Benchmark::run(function () {
+      $string = str_repeat(mt_rand(0, 9), 1024 * 1024);
+      return md5($string);
+  }, ['count' => 1000]),
+
+```
+
 ### License
 
 MIT
