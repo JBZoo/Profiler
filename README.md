@@ -5,14 +5,6 @@
 [![License](https://poser.pugx.org/JBZoo/Profiler/license)](https://packagist.org/packages/JBZoo/Profiler)   [![Latest Stable Version](https://poser.pugx.org/JBZoo/Profiler/v/stable)](https://packagist.org/packages/JBZoo/Profiler) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/JBZoo/Profiler/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/JBZoo/Profiler/?branch=master)
 
 
-
-## Unit tests and check code style
-```sh
-composer update-all
-composer test
-```
-
-
 ## Usage
 ```php
 use JBZoo\Profiler\Benchmark;
@@ -58,6 +50,14 @@ Benchmark::run(function () {
   }, ['count' => 1000]),
 
 ```
+
+
+## Unit tests and check code style
+```sh
+make
+make test-all
+```
+
 
 ### License
 
